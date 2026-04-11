@@ -36,3 +36,15 @@ unless DB.table_exists?(:weekly_assignments)
     username_mention :string
   end
 end
+
+ABSENCES = DB[:absences]
+
+unless DB.table_exists?(:absences)
+  DB.create_table :absences do
+    primary_key :id
+    Integer :user_id
+    Integer :chat_id
+    String :week_key
+    DateTime :created_at
+  end
+end

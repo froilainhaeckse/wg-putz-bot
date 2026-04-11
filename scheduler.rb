@@ -24,10 +24,18 @@ def post_weekly_putzplan(bot, chat_id)
   return if last_week_entry && last_week_entry[:value] == current_week
 
   keyboard = [
-    [Telegram::Bot::Types::InlineKeyboardButton.new(
-      text: "🧽 Ich übernehme",
-      callback_data: "take_task"
-    )]
+    [
+      Telegram::Bot::Types::InlineKeyboardButton.new(
+        text: "🧽 Ich übernehme",
+        callback_data: "take_task"
+      )
+    ],
+    [
+      Telegram::Bot::Types::InlineKeyboardButton.new(
+        text: "🚫 Diese Woche nicht da",
+        callback_data: "mark_absent"
+      )
+    ]
   ]
 
   markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(
