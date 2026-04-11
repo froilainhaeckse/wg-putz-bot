@@ -1,0 +1,52 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    axiom-types (0.1.1)
+      descendants_tracker (~> 0.0.4)
+      ice_nine (~> 0.11.0)
+      thread_safe (~> 0.3, >= 0.3.1)
+    base64 (0.3.0)
+    bigdecimal (4.1.1)
+    coercible (1.0.0)
+      descendants_tracker (~> 0.0.1)
+    descendants_tracker (0.0.4)
+      thread_safe (~> 0.3, >= 0.3.1)
+    dotenv (2.8.1)
+    dry-inflector (0.2.1)
+    faraday (2.8.1)
+      base64
+      faraday-net_http (>= 2.0, < 3.1)
+      ruby2_keywords (>= 0.0.4)
+    faraday-multipart (1.2.0)
+      multipart-post (~> 2.0)
+    faraday-net_http (3.0.2)
+    ice_nine (0.11.2)
+    mini_portile2 (2.8.9)
+    multipart-post (2.4.1)
+    ruby2_keywords (0.0.5)
+    sequel (5.103.0)
+      bigdecimal
+    sqlite3 (2.9.2)
+      mini_portile2 (~> 2.8.0)
+    telegram-bot-ruby (0.21.1)
+      dry-inflector
+      faraday (~> 2.0)
+      faraday-multipart (~> 1.0)
+      virtus (~> 2.0)
+    thread_safe (0.3.6)
+    virtus (2.0.0)
+      axiom-types (~> 0.1)
+      coercible (~> 1.0)
+      descendants_tracker (~> 0.0, >= 0.0.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  dotenv
+  sequel
+  sqlite3
+  telegram-bot-ruby
+
+BUNDLED WITH
+   2.5.6
