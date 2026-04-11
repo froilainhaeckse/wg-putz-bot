@@ -2,6 +2,10 @@
 
 Minimalistischer Telegram-Bot zur Organisation eines wöchentlichen WG-Putzplans.
 
+Kein Gamification-System.  
+Keine Punktelogik.  
+Nur transparente Verantwortlichkeit + Erinnerung.
+
 ---
 
 ## Idee
@@ -11,6 +15,7 @@ Jede Woche übernimmt eine Person das Putzen.
 Der Bot:
 
 - fragt montags automatisch nach einer freiwilligen Person
+- erlaubt optional „nicht da“ zu markieren
 - speichert, wer übernimmt
 - erinnert sonntags mit @Mention an die Verantwortung
 - ermöglicht einfache Statistik-Abfragen
@@ -28,15 +33,21 @@ Bot postet:
 > Neue Woche, neues Glück.  
 > Wer übernimmt diese Woche?
 
-Mit Inline-Button:
+Mit zwei Inline-Buttons:
 
-🧽 Ich übernehme
+- 🧽 Ich übernehme  
+- 🚫 Diese Woche nicht da  
 
-Beim Klick:
+**Ich übernehme**
+- speichert die Person für diese Kalenderwoche
+- nur eine Person kann übernehmen
 
-- Person wird gespeichert
-- Woche wird markiert
-- Bestätigung wird gepostet
+**Diese Woche nicht da**
+- markiert die Person für diese Woche als abwesend
+- abwesende Personen können nicht übernehmen
+
+Widersprüchliche Zustände werden verhindert  
+(z. B. erst übernehmen, dann abwesend klicken).
 
 ---
 
@@ -48,6 +59,7 @@ Falls jemand eingetragen ist:
 
 - Nur einmal pro Woche  
 - Kein Spam  
+- @Mention falls Username vorhanden  
 
 ---
 
@@ -93,6 +105,7 @@ Tabellen:
 
 - cleanings
 - weekly_assignments
+- absences
 - bot_meta
 
 Wochen werden über `cwyear + cweek` identifiziert.
@@ -137,12 +150,3 @@ ruby bot.rb
 ```
 
 Bot läuft als Long-Polling-Prozess.
-
----
-
-## Laufzeitverhalten
-
-- Scheduler-Thread prüft jede Minute die Zeitbedingungen
-- Posts werden über `bot_meta` gegen Mehrfachausführung geschützt
-- Telegram @Mention wird genutzt, falls `username` existiert
-- Falls kein Username vorhanden ist, wird der Vorname verwendet
