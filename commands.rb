@@ -26,7 +26,7 @@ def handle_message(bot, message)
   when "/stats"
     stats = CLEANINGS
               .where(chat_id: message.chat.id)
-              .select_group(:user_first_name)
+              .select_group(:user_id, :user_first_name)
               .select_append { count(id).as(count) }
               .all
 
@@ -37,9 +37,9 @@ def handle_message(bot, message)
 
     text = "🧽 Cleaning Stats\n\n"
     stats.each do |entry|
-      text += "#{entry[:user_first_name]}: #{entry[:count]}x\n"
+      text += "#{mention(entry[:user_first_name], entry[:user_id])}: #{entry[:count]}x\n"
     end
 
-    bot.api.send_message(chat_id: message.chat.id, text: text)
+    bot.api.send_message(chat_id: message.chat.id, text: text, parse_mode: "Markdown")
   end
 end

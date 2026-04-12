@@ -45,7 +45,8 @@ def handle_callback(bot, query)
 
     bot.api.send_message(
       chat_id: chat_id,
-      text: "🚫 #{user_name} ist diese Woche nicht da."
+      text: "🚫 #{mention(user_name, user_id)} ist diese Woche nicht da.",
+      parse_mode: "Markdown"
     )
 
     bot.api.answer_callback_query(callback_query_id: query.id)
@@ -103,7 +104,8 @@ def handle_callback(bot, query)
 
     bot.api.send_message(
       chat_id: chat_id,
-      text: "✅ #{user_name} übernimmt diese Woche das Putzen!"
+      text: "✅ #{mention(user_name, user_id)} übernimmt diese Woche das Putzen!",
+      parse_mode: "Markdown"
     )
 
     bot.api.answer_callback_query(callback_query_id: query.id)

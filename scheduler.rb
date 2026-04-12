@@ -72,16 +72,10 @@ def sunday_check(bot, chat_id)
 
   return unless assignment
 
-  mention =
-    if assignment[:username_mention] && !assignment[:username_mention].empty?
-      "@#{assignment[:username_mention]}"
-    else
-      assignment[:user_first_name]
-    end
-
   bot.api.send_message(
     chat_id: chat_id,
-    text: "🧽 Wochen-Check!\n\n#{mention} — hast du diese Woche wirklich geputzt? 👀"
+    text: "🧽 Wochen-Check!\n\n#{mention(assignment[:user_first_name], assignment[:user_id])} — hast du diese Woche wirklich geputzt? 👀",
+    parse_mode: "Markdown"
   )
 
   if last_entry
