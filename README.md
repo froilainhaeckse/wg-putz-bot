@@ -114,26 +114,39 @@ Wochen werden über `cwyear + cweek` identifiziert.
 
 ## Setup
 
-### 1. Repository klonen
+### Schnellinstallation (Raspberry Pi)
 
+```bash
+git clone https://github.com/froilainhaeckse/wg-putz-bot.git
+cd wg-putz-bot
+echo 'TELEGRAM_BOT_TOKEN=DEIN_TOKEN' > .env
+./install.sh
 ```
+
+Das Skript installiert alle Abhängigkeiten, richtet einen systemd-Service ein und startet den Bot automatisch — auch nach einem Reboot.
+
+### Manuelle Installation
+
+#### 1. Repository klonen
+
+```bash
 git clone https://github.com/froilainhaeckse/wg-putz-bot.git
 cd wg-putz-bot
 ```
 
-### 2. Dependencies installieren
+#### 2. Dependencies installieren
 
-```
+```bash
 bundle install
 ```
 
 Falls nötig (Raspberry Pi):
 
-```
-sudo apt install ruby-full build-essential libsqlite3-dev
+```bash
+sudo apt install ruby ruby-dev build-essential libsqlite3-dev
 ```
 
-### 3. Token setzen
+#### 3. Token setzen
 
 `.env` erstellen:
 
@@ -141,12 +154,32 @@ sudo apt install ruby-full build-essential libsqlite3-dev
 TELEGRAM_BOT_TOKEN=DEIN_TOKEN
 ```
 
-oder als Environment Variable exportieren.
+#### 4. Starten
 
-### 4. Starten
-
-```
+```bash
 ruby bot.rb
 ```
 
 Bot läuft als Long-Polling-Prozess.
+
+---
+
+## Bot verwalten
+
+Nach der Installation mit `install.sh` läuft der Bot als systemd-Service. Zur Steuerung:
+
+```bash
+./bot-ctl.sh start      # Bot starten
+./bot-ctl.sh stop       # Bot stoppen
+./bot-ctl.sh restart    # Neustart (z.B. nach git pull)
+./bot-ctl.sh status     # Aktueller Zustand
+./bot-ctl.sh logs       # Live-Logs verfolgen
+```
+
+### Deinstallation
+
+```bash
+./uninstall.sh
+```
+
+Stoppt den Service und entfernt ihn aus systemd. Projektdateien und Datenbank bleiben erhalten.
