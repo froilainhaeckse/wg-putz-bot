@@ -5,7 +5,7 @@ DB = Sequel.sqlite("putzplan.db")
 unless DB.table_exists?(:cleanings)
   DB.create_table :cleanings do
     primary_key :id
-    String :user_name
+    String :user_first_name
     Integer :user_id
     Integer :chat_id
     DateTime :created_at
@@ -23,19 +23,19 @@ end
 BOT_META = DB[:bot_meta]
 
 
-WEEKLY_ASSIGNMENTS = DB[:weekly_assignments]
-
 unless DB.table_exists?(:weekly_assignments)
   DB.create_table :weekly_assignments do
     primary_key :id
-    user_id :integer
-    user_first_name :string
-    chat_id :integer
-    week_key :string
-    created_at :datetime
-    username_mention :string
+    Integer :user_id
+    String :user_first_name
+    Integer :chat_id
+    String :week_key
+    DateTime :created_at
+    String :username_mention
   end
 end
+
+WEEKLY_ASSIGNMENTS = DB[:weekly_assignments]
 
 ABSENCES = DB[:absences]
 
