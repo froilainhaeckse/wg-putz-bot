@@ -23,6 +23,19 @@ def handle_message(bot, message)
       reply_markup: markup
     )
 
+  when "/update"
+    bot.api.send_message(chat_id: message.chat.id, text: "⏳ Update wird ausgeführt...")
+
+    output = `bash #{__dir__}/update.sh 2>&1`
+    success = $?.success?
+
+    if success
+      bot.api.send_message(chat_id: message.chat.id, text: "✅ Update erfolgreich. Starte neu...")
+      exit(0)
+    else
+      bot.api.send_message(chat_id: message.chat.id, text: "❌ Update fehlgeschlagen:\n#{output}")
+    end
+
   when "/stats"
     stats = CLEANINGS
               .where(chat_id: message.chat.id)
