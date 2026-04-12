@@ -70,7 +70,7 @@ In der Telegram-Gruppe:
 ```
 /putzplan
 ```
-Initialisiert den Bot für diese Gruppe.
+Aktiviert den Bot für diese Gruppe.
 
 ```
 /stats
@@ -78,9 +78,14 @@ Initialisiert den Bot für diese Gruppe.
 Zeigt, wer wie oft übernommen hat.
 
 ```
-/fairness
+/update
 ```
-Berechnet Differenz zwischen Maximum und Minimum an Übernahmen.
+Aktualisiert den Bot per Remote-Update.
+
+```
+/hä
+```
+Zeigt alle verfügbaren Befehle an.
 
 ---
 

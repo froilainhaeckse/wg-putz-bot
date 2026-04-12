@@ -2,26 +2,12 @@ def handle_message(bot, message)
   case message.text
 
   when "/putzplan"
-    unless BOT_META.where(key: "chat_id").first
+    if BOT_META.where(key: "chat_id", value: message.chat.id.to_s).first
+      bot.api.send_message(chat_id: message.chat.id, text: "Bot ist bereits aktiviert! Jeden Montag um 09:00 wird nach Freiwilligen gefragt.")
+    else
       BOT_META.insert(key: "chat_id", value: message.chat.id.to_s)
+      bot.api.send_message(chat_id: message.chat.id, text: "Heyhey bin da :) Ab jetzt werde ich jeden Montag fragen, wer bock hat zu putzen.")
     end
-
-    keyboard = [
-      [Telegram::Bot::Types::InlineKeyboardButton.new(
-        text: "🧽 Ich übernehme",
-        callback_data: "take_task"
-      )]
-    ]
-
-    markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(
-      inline_keyboard: keyboard
-    )
-
-    bot.api.send_message(
-      chat_id: message.chat.id,
-      text: "Wer putzt diese Woche?",
-      reply_markup: markup
-    )
 
   when "/update"
     bot.api.send_message(chat_id: message.chat.id, text: "⏳ Update wird ausgeführt...")
@@ -54,5 +40,14 @@ def handle_message(bot, message)
     end
 
     bot.api.send_message(chat_id: message.chat.id, text: text, parse_mode: "Markdown")
+
+  when "/hä"
+    help = "🧹 Befehle:\n\n" \
+           "/putzplan — Bot für diese Gruppe aktivieren\n" \
+           "/stats — Wer hat wie oft geputzt?\n" \
+           "/update — Bot aktualisieren (Remote-Update)\n" \
+           "/hä — Diese Hilfe anzeigen"
+
+    bot.api.send_message(chat_id: message.chat.id, text: help)
   end
 end
