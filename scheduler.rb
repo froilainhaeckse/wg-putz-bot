@@ -3,13 +3,11 @@ def start_scheduler(bot)
     loop do
       sleep 60
 
-      chat_entry = BOT_META.where(key: "chat_id").first
-      next unless chat_entry
-
-      chat_id = chat_entry[:value].to_i
-
-      post_weekly_putzplan(bot, chat_id)
-      sunday_check(bot, chat_id)
+      BOT_META.where(key: "chat_id").each do |entry|
+        chat_id = entry[:value].to_i
+        post_weekly_putzplan(bot, chat_id)
+        sunday_check(bot, chat_id)
+      end
     end
   end
 end
