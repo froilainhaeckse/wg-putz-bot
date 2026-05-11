@@ -17,6 +17,8 @@ def handle_message(bot, message)
 
     if success
       bot.api.send_message(chat_id: message.chat.id, text: "✅ Update erfolgreich. Starte neu...")
+      # Confirm offset server-side so /update isn't re-delivered after the systemd restart.
+      bot.api.get_updates(offset: bot.options[:offset], timeout: 0, limit: 1)
       exit(0)
     else
       bot.api.send_message(chat_id: message.chat.id, text: "❌ Update fehlgeschlagen:\n#{output}")
