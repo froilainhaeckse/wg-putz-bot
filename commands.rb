@@ -1,4 +1,6 @@
 def handle_message(bot, message)
+  upsert_user(message.from&.id, message.from&.first_name, message.from&.username)
+
   case message.text
 
   when "/putzplan"
@@ -27,8 +29,9 @@ def handle_message(bot, message)
   when "/stats"
     stats = CLEANINGS
               .where(chat_id: message.chat.id)
-              .select_group(:user_id, :user_first_name)
+              .select_group(:user_id)
               .select_append { count(id).as(count) }
+              .order(Sequel.desc(:count))
               .all
 
     if stats.empty?
@@ -38,7 +41,7 @@ def handle_message(bot, message)
 
     text = "🧽 Cleaning Stats\n\n"
     stats.each do |entry|
-      text += "#{mention(entry[:user_first_name], entry[:user_id])}: #{entry[:count]}x\n"
+      text += "#{mention(entry[:user_id])}: #{entry[:count]}x\n"
     end
 
     bot.api.send_message(chat_id: message.chat.id, text: text, parse_mode: "Markdown")

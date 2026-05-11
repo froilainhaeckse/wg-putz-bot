@@ -66,7 +66,7 @@ def sunday_check(bot, chat_id)
 
   bot.api.send_message(
     chat_id: chat_id,
-    text: "🧽 Wochen-Check!\n\n#{mention(assignment[:user_first_name], assignment[:user_id])} — hast du diese Woche wirklich geputzt? 👀",
+    text: "🧽 Wochen-Check!\n\n#{mention(assignment[:user_id])} — hast du diese Woche wirklich geputzt? 👀",
     parse_mode: "Markdown",
     reply_markup: markup
   )

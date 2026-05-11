@@ -19,6 +19,21 @@ RSpec.describe "#handle_callback" do
     double("query", id: "qid", data: data, from: from, message: message)
   end
 
+  it "upserts the user on every callback" do
+    handle_callback(bot, make_query("take_task"))
+    row = USERS.where(user_id: user_id).first
+    expect(row[:first_name]).to eq("Alice")
+    expect(row[:username]).to eq("alice")
+  end
+
+  it "updates the stored name when a user renames themselves" do
+    USERS.insert(user_id: user_id, first_name: "OldName", username: "oldhandle", updated_at: Time.now - 86400)
+    handle_callback(bot, make_query("take_task"))
+    row = USERS.where(user_id: user_id).first
+    expect(row[:first_name]).to eq("Alice")
+    expect(row[:username]).to eq("alice")
+  end
+
   context "take_task" do
     it "saves the assignment and announces it" do
       handle_callback(bot, make_query("take_task"))
@@ -29,7 +44,7 @@ RSpec.describe "#handle_callback" do
     end
 
     it "rejects when someone is already assigned this week" do
-      WEEKLY_ASSIGNMENTS.insert(user_id: 9999, user_first_name: "Bob", chat_id: chat_id, week_key: week, created_at: Time.now)
+      WEEKLY_ASSIGNMENTS.insert(user_id: 9999, chat_id: chat_id, week_key: week, created_at: Time.now)
       handle_callback(bot, make_query("take_task"))
       expect(WEEKLY_ASSIGNMENTS.count).to eq(1)
       expect(bot_api).to have_received(:answer_callback_query)
@@ -38,6 +53,10 @@ RSpec.describe "#handle_callback" do
   end
 
   context "confirm_cleaned" do
+    before do
+      WEEKLY_ASSIGNMENTS.insert(user_id: user_id, chat_id: chat_id, week_key: week, created_at: Time.now)
+    end
+
     it "logs the cleaning and sends a thank-you" do
       handle_callback(bot, make_query("confirm_cleaned"))
       expect(CLEANINGS.first[:user_id]).to eq(user_id)
@@ -49,6 +68,15 @@ RSpec.describe "#handle_callback" do
       handle_callback(bot, make_query("confirm_cleaned"))
       handle_callback(bot, make_query("confirm_cleaned"))
       expect(CLEANINGS.count).to eq(1)
+    end
+
+    it "rejects when a different user tries to confirm" do
+      other_from = double("from", id: 9999, first_name: "Mallory", username: nil)
+      query = double("query", id: "qid", data: "confirm_cleaned", from: other_from, message: message)
+      handle_callback(bot, query)
+      expect(CLEANINGS).to be_empty
+      expect(bot_api).to have_received(:answer_callback_query)
+        .with(hash_including(show_alert: true))
     end
   end
 
