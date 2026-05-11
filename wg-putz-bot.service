@@ -4,11 +4,13 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=%h/wg-putz-bot
+User=wg-py
+Group=wg-py
+WorkingDirectory=/home/wg-py/wg-putz-bot
 ExecStart=/usr/bin/ruby bot.rb
 Restart=always
 RestartSec=10
-EnvironmentFile=%h/wg-putz-bot/.env
+EnvironmentFile=/home/wg-py/wg-putz-bot/.env
 
 [Install]
 WantedBy=multi-user.target
