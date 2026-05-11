@@ -1,7 +1,8 @@
 def handle_callback(bot, query)
   chat_id = query.message.chat.id
   user_id = query.from.id
-  user_name = query.from.first_name
+
+  upsert_user(user_id, query.from.first_name, query.from.username)
 
   case query.data
 
@@ -18,8 +19,6 @@ def handle_callback(bot, query)
 
     WEEKLY_ASSIGNMENTS.insert(
       user_id: user_id,
-      user_first_name: user_name,
-      username_mention: query.from.username,
       chat_id: chat_id,
       week_key: current_week,
       created_at: Time.now
@@ -27,7 +26,7 @@ def handle_callback(bot, query)
 
     bot.api.send_message(
       chat_id: chat_id,
-      text: "✅ #{mention(user_name, user_id)} übernimmt diese Woche das Putzen!",
+      text: "✅ #{mention(user_id)} übernimmt diese Woche das Putzen!",
       parse_mode: "Markdown"
     )
     bot.api.answer_callback_query(callback_query_id: query.id)
@@ -53,7 +52,6 @@ def handle_callback(bot, query)
     end
 
     CLEANINGS.insert(
-      user_first_name: user_name,
       user_id: user_id,
       chat_id: chat_id,
       created_at: Time.now
@@ -65,7 +63,7 @@ def handle_callback(bot, query)
       BOT_META.insert(key: meta_key, value: current_week)
     end
 
-    bot.api.send_message(chat_id: chat_id, text: "✅ Stabil. Danke fürs Putzen, #{user_name}!")
+    bot.api.send_message(chat_id: chat_id, text: "✅ Stabil. Danke fürs Putzen, #{user_name(user_id)}!")
     bot.api.answer_callback_query(callback_query_id: query.id)
 
   when "confirm_forgot"

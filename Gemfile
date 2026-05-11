@@ -5,6 +5,8 @@ gem "telegram-bot-ruby"
 gem "sequel"
 gem "sqlite3"
 gem "dotenv"
+gem "ostruct"
+gem "logger"
 
 group :development, :test do
   gem 'rspec'

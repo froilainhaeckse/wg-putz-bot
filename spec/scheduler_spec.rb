@@ -51,7 +51,8 @@ RSpec.describe "#sunday_check" do
   end
 
   def insert_assignment
-    WEEKLY_ASSIGNMENTS.insert(user_id: 1001, user_first_name: "Alice", chat_id: chat_id, week_key: week, created_at: six_pm)
+    USERS.insert(user_id: 1001, first_name: "Alice", updated_at: six_pm)
+    WEEKLY_ASSIGNMENTS.insert(user_id: 1001, chat_id: chat_id, week_key: week, created_at: six_pm)
   end
 
   it "mentions the assigned person in the check-in message" do

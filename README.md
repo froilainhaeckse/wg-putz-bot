@@ -2,8 +2,8 @@
 
 Minimalistischer Telegram-Bot zur Organisation eines wöchentlichen WG-Putzplans.
 
-Kein Gamification-System.  
-Keine Punktelogik.  
+Kein Gamification-System.
+Keine Punktelogik.
 Nur transparente Verantwortlichkeit + Erinnerung.
 
 ---
@@ -15,9 +15,8 @@ Jede Woche übernimmt eine Person das Putzen.
 Der Bot:
 
 - fragt montags automatisch nach einer freiwilligen Person
-- erlaubt optional „nicht da“ zu markieren
 - speichert, wer übernimmt
-- erinnert sonntags mit @Mention an die Verantwortung
+- erinnert sonntags mit @Mention an die Verantwortung und bittet um Bestätigung
 - ermöglicht einfache Statistik-Abfragen
 
 Ziel: Soziale Transparenz statt Excel-Tabelle.
@@ -30,24 +29,14 @@ Ziel: Soziale Transparenz statt Excel-Tabelle.
 
 Bot postet:
 
-> Neue Woche, neues Glück.  
+> Neue Woche, neues Glück.
 > Wer übernimmt diese Woche?
 
-Mit zwei Inline-Buttons:
+Mit einem Inline-Button:
 
-- 🧽 Ich übernehme  
-- 🚫 Diese Woche nicht da  
+- 🧽 Ich übernehme
 
-**Ich übernehme**
-- speichert die Person für diese Kalenderwoche
-- nur eine Person kann übernehmen
-
-**Diese Woche nicht da**
-- markiert die Person für diese Woche als abwesend
-- abwesende Personen können nicht übernehmen
-
-Widersprüchliche Zustände werden verhindert  
-(z. B. erst übernehmen, dann abwesend klicken).
+Speichert die Person für diese Kalenderwoche — nur eine Person kann übernehmen.
 
 ---
 
@@ -57,9 +46,12 @@ Falls jemand eingetragen ist:
 
 > @username — hast du diese Woche wirklich geputzt? 👀
 
-- Nur einmal pro Woche  
-- Kein Spam  
-- @Mention falls Username vorhanden  
+Mit zwei Inline-Buttons:
+
+- ✅ Ja, erledigt — loggt das Cleaning für die Statistik
+- ❌ 😬 Ups, vergessen — nur eine konversationelle Antwort
+
+Nur die zugewiesene Person kann die Bestätigung abgeben.
 
 ---
 
@@ -97,7 +89,7 @@ scheduler.rb    → Zeitgesteuerte Logik (Montag / Sonntag)
 commands.rb     → Slash-Commands
 callbacks.rb    → Button-Handling
 db.rb           → SQLite + Tabellen
-helpers.rb      → week_key etc.
+helpers.rb      → week_key, upsert_user, mention
 ```
 
 ---
@@ -108,10 +100,10 @@ SQLite via Sequel.
 
 Tabellen:
 
-- cleanings
-- weekly_assignments
-- absences
-- bot_meta
+- users — Telegram-id → Name/Username, wird bei jeder Interaktion aktualisiert
+- cleanings — Log aller bestätigten Putzen
+- weekly_assignments — Wer übernimmt für eine gegebene Woche
+- bot_meta — Chat-Registrierung + Scheduler-Dedup-State
 
 Wochen werden über `cwyear + cweek` identifiziert.
 
@@ -162,7 +154,7 @@ TELEGRAM_BOT_TOKEN=DEIN_TOKEN
 #### 4. Starten
 
 ```bash
-ruby bot.rb
+bundle exec ruby bot.rb
 ```
 
 Bot läuft als Long-Polling-Prozess.
