@@ -7,7 +7,8 @@ Type=simple
 User=wg-py
 Group=wg-py
 WorkingDirectory=/home/wg-py/wg-putz-bot
-ExecStart=/usr/bin/ruby bot.rb
+Environment=PATH=/home/wg-py/.local/share/gem/ruby/3.3.0/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/home/wg-py/.local/share/gem/ruby/3.3.0/bin/bundle exec ruby bot.rb
 Restart=always
 RestartSec=10
 EnvironmentFile=/home/wg-py/wg-putz-bot/.env
