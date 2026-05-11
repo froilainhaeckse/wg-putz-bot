@@ -18,27 +18,14 @@ def post_weekly_putzplan(bot, chat_id)
 
   current_week = week_key(today)
 
-  last_week_entry = BOT_META.where(key: "last_week_posted_#{chat_id}").first
-  return if last_week_entry && last_week_entry[:value] == current_week
+  last_entry = BOT_META.where(key: "last_week_posted_#{chat_id}").first
+  return if last_entry && last_entry[:value] == current_week
 
   keyboard = [
-    [
-      Telegram::Bot::Types::InlineKeyboardButton.new(
-        text: "🧽 Ich übernehme",
-        callback_data: "take_task"
-      )
-    ],
-    [
-      Telegram::Bot::Types::InlineKeyboardButton.new(
-        text: "🚫 Diese Woche nicht da",
-        callback_data: "mark_absent"
-      )
-    ]
+    [Telegram::Bot::Types::InlineKeyboardButton.new(text: "🧽 Ich übernehme", callback_data: "take_task")]
   ]
 
-  markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(
-    inline_keyboard: keyboard
-  )
+  markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard)
 
   bot.api.send_message(
     chat_id: chat_id,
@@ -46,7 +33,7 @@ def post_weekly_putzplan(bot, chat_id)
     reply_markup: markup
   )
 
-  if last_week_entry
+  if last_entry
     BOT_META.where(key: "last_week_posted_#{chat_id}").update(value: current_week)
   else
     BOT_META.insert(key: "last_week_posted_#{chat_id}", value: current_week)
@@ -55,7 +42,11 @@ end
 
 def sunday_check(bot, chat_id)
   today = Date.today
-  return unless today.wday == 0 && Time.now.hour == 18
+  now = Time.now
+
+  return unless today.wday == 0 &&
+                now.hour == 18 &&
+                now.min == 0
 
   current_week = week_key(today)
 
@@ -63,17 +54,21 @@ def sunday_check(bot, chat_id)
   last_entry = BOT_META.where(key: meta_key).first
   return if last_entry && last_entry[:value] == current_week
 
-  assignment = WEEKLY_ASSIGNMENTS.where(
-    chat_id: chat_id,
-    week_key: current_week
-  ).first
-
+  assignment = WEEKLY_ASSIGNMENTS.where(chat_id: chat_id, week_key: current_week).first
   return unless assignment
+
+  keyboard = [
+    [Telegram::Bot::Types::InlineKeyboardButton.new(text: "✅ Ja, erledigt",        callback_data: "confirm_cleaned")],
+    [Telegram::Bot::Types::InlineKeyboardButton.new(text: "❌ 😬 Ups, vergessen",   callback_data: "confirm_forgot")]
+  ]
+
+  markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: keyboard)
 
   bot.api.send_message(
     chat_id: chat_id,
     text: "🧽 Wochen-Check!\n\n#{mention(assignment[:user_first_name], assignment[:user_id])} — hast du diese Woche wirklich geputzt? 👀",
-    parse_mode: "Markdown"
+    parse_mode: "Markdown",
+    reply_markup: markup
   )
 
   if last_entry

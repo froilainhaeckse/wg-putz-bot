@@ -11,6 +11,7 @@ GEM
       descendants_tracker (~> 0.0.1)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
+    diff-lcs (1.6.2)
     dotenv (2.8.1)
     dry-inflector (0.2.1)
     faraday (2.8.1)
@@ -23,6 +24,19 @@ GEM
     ice_nine (0.11.2)
     mini_portile2 (2.8.9)
     multipart-post (2.4.1)
+    rspec (3.13.2)
+      rspec-core (~> 3.13.0)
+      rspec-expectations (~> 3.13.0)
+      rspec-mocks (~> 3.13.0)
+    rspec-core (3.13.6)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.5)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.8)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-support (3.13.7)
     ruby2_keywords (0.0.5)
     sequel (5.103.0)
       bigdecimal
@@ -44,6 +58,7 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv
+  rspec
   sequel
   sqlite3
   telegram-bot-ruby
