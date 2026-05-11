@@ -34,6 +34,16 @@ def handle_callback(bot, query)
 
   when "confirm_cleaned"
     current_week = week_key(Date.today)
+    assignment = WEEKLY_ASSIGNMENTS.where(chat_id: chat_id, week_key: current_week).first
+
+    if assignment.nil? || assignment[:user_id] != user_id
+      bot.api.answer_callback_query(
+        callback_query_id: query.id,
+        text: "Nur die zugewiesene Person kann das bestätigen.",
+        show_alert: true
+      )
+      return
+    end
     meta_key = "last_cleaning_logged_#{chat_id}"
     last_entry = BOT_META.where(key: meta_key).first
 
